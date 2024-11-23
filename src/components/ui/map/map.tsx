@@ -108,9 +108,9 @@ const Map = ({ dataPoints }: { dataPoints: DataPoint[] }) => {
         <div className={'font-semibold'} suppressHydrationWarning>
           Map time: {formatTime(time)}
         </div>
-        <Button className={'ml-auto'} onClick={getRescueRoute}>
-          Get rescue route
-        </Button>
+        {/*<Button className={'ml-auto'} onClick={getRescueRoute}>*/}
+        {/*  Get rescue route*/}
+        {/*</Button>*/}
       </div>
       <GoogleMapsAPIProvider
         apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}

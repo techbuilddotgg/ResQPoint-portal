@@ -1,7 +1,13 @@
 'use client';
 
 import * as React from 'react';
-import { LifeBuoy, MapPinPlusInside, Send, Map, Sparkles } from 'lucide-react';
+import {
+  LifeBuoy,
+  MapPinPlusInside,
+  Send,
+  Map,
+  CircleDollarSign,
+} from 'lucide-react';
 
 import { NavSecondary } from '@/components/nav-secondary';
 import { NavUser } from '@/components/nav-user';
@@ -31,15 +37,15 @@ const data = {
       items: [
         {
           title: 'Map',
-          url: '#',
-          isActive: false,
+          url: '/',
+          isActive: window.location.pathname === '/',
           icon: Map,
         },
         {
-          title: 'Subscription',
-          url: '/subscription',
-          isActive: true,
-          icon: Sparkles,
+          title: 'pricing',
+          url: '/pricing',
+          isActive: window.location.pathname === '/pricing',
+          icon: CircleDollarSign,
         },
       ],
     },
