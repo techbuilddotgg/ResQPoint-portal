@@ -35,10 +35,7 @@ export default async function Page() {
             from live data.
           </p>
         </div>
-        {/*<Button className={'w-fit ml-auto'}>Request Drone</Button>*/}
-        <div className="min-h-[100vh] overflow-hidden flex-1 rounded-xl md:min-h-min">
-          <Map dataPoints={data} />
-        </div>
+        <Map dataPoints={data} />
       </div>
     </>
   );

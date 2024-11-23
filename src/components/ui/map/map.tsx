@@ -3,38 +3,17 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   APIProvider as GoogleMapsAPIProvider,
   Map as GoogleMap,
-  useMap,
-  limitTiltRange,
 } from '@vis.gl/react-google-maps';
 import { HeatmapLayer } from '@deck.gl/aggregation-layers';
-import { Color, LayersList } from 'deck.gl';
+import { Color } from 'deck.gl';
 import { DataPoint } from '@/lib/types';
-import { GoogleMapsOverlay } from '@deck.gl/google-maps';
 import { useToast } from '@/hooks/use-toast';
-
-export type DeckglOverlayProps = { layers?: LayersList };
-
-export const DeckGlOverlay = ({ layers }: DeckglOverlayProps) => {
-  const deck = useMemo(() => new GoogleMapsOverlay({ interleaved: true }), []);
-
-  const map = useMap();
-  useEffect(() => {
-    deck.setMap(map);
-
-    return () => deck.setMap(null);
-  }, [deck, map]);
-
-  useEffect(() => {
-    deck.setProps({ layers, onViewStateChange: limitTiltRange });
-  }, [layers, deck]);
-
-  // No DOM rendered by this component
-  return null;
-};
+import { DeckGlOverlay } from '@/components/ui/map/deck-gl-layers';
 
 const Map = ({ dataPoints }: { dataPoints: DataPoint[] }) => {
   const [radius, setRadius] = useState(20); // Start with a reasonable default radius
   const { toast } = useToast();
+  const [time, setTime] = useState<Date>(new Date());
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -45,6 +24,14 @@ const Map = ({ dataPoints }: { dataPoints: DataPoint[] }) => {
   }, []);
 
   useEffect(() => {
+    if (radius === 90) {
+      setTime(new Date());
+    } else {
+      setTime((time) => new Date(time.getTime() + 60 * 60 * 1000));
+    }
+  }, [radius]);
+
+  useEffect(() => {
     if (radius === 30) {
       toast({
         title: 'SMS Sent!',
@@ -53,6 +40,14 @@ const Map = ({ dataPoints }: { dataPoints: DataPoint[] }) => {
       });
     }
   }, [radius, toast]);
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23', // Use 24-hour format
+    });
+  };
 
   // Memoize the layers to prevent unnecessary re-renders
   const layers = useMemo(() => {
@@ -79,20 +74,31 @@ const Map = ({ dataPoints }: { dataPoints: DataPoint[] }) => {
   }, [dataPoints, radius]);
 
   return (
-    <GoogleMapsAPIProvider
-      apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}
-    >
-      <GoogleMap
-        defaultCenter={{ lat: 46.1512, lng: 14.9955 }}
-        defaultZoom={8}
-        gestureHandling="greedy"
-        disableDefaultUI={true}
-        keyboardShortcuts={false}
-        mapId="739af084373f96fe"
+    <div className="min-h-[100vh] overflow-hidden flex-1 rounded-xl md:min-h-min">
+      <div className={'flex flex-row gap-4'}>
+        <div className={'font-semibold'} suppressHydrationWarning>
+          Current time: {formatTime(new Date())}
+        </div>
+        <div className={'font-semibold'} suppressHydrationWarning>
+          Map time: {formatTime(time)}
+        </div>
+      </div>
+      <GoogleMapsAPIProvider
+        apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}
       >
-        <DeckGlOverlay layers={layers} />
-      </GoogleMap>
-    </GoogleMapsAPIProvider>
+        <GoogleMap
+          defaultCenter={{ lat: 46.45, lng: 14.9 }}
+          defaultZoom={13}
+          gestureHandling="greedy"
+          disableDefaultUI={true}
+          keyboardShortcuts={false}
+          mapId="739af084373f96fe"
+          reuseMaps
+        >
+          <DeckGlOverlay layers={layers} />
+        </GoogleMap>
+      </GoogleMapsAPIProvider>
+    </div>
   );
 };
 
