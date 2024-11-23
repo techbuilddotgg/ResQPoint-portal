@@ -32,7 +32,7 @@ const data = {
         {
           title: 'Map',
           url: '#',
-          isActive: true,
+          isActive: false,
           icon: Map,
         },
         {
