@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { LifeBuoy, MapPinPlusInside, Send, Map } from 'lucide-react';
+import { LifeBuoy, MapPinPlusInside, Send, Map, Sparkles } from 'lucide-react';
 
 import { NavSecondary } from '@/components/nav-secondary';
 import { NavUser } from '@/components/nav-user';
@@ -34,6 +34,12 @@ const data = {
           url: '#',
           isActive: true,
           icon: Map,
+        },
+        {
+          title: 'Subscription',
+          url: '/subscription',
+          isActive: true,
+          icon: Sparkles,
         },
       ],
     },
